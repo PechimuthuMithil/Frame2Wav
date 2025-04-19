@@ -11,8 +11,28 @@ import soundfile as sf
 from tqdm import tqdm
 from omegaconf import OmegaConf
 
-sys.path.append(os.path.join("/".join(os.getcwd().split("/")[:-1]), "Frieren"))
-from cfm.util import instantiate_from_config
+# More robust path handling
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+frieren_path = os.path.join(project_root, "Frieren")
+if frieren_path not in sys.path:
+    sys.path.insert(0, frieren_path)
+
+print("Project root:", project_root)
+print("Frieren path:", frieren_path)
+print("sys.path:", sys.path)
+
+try:
+    from cfm.util import instantiate_from_config
+except ImportError as e:
+    print(f"Import error: {e}")
+    print("Checking if module exists:")
+    cfm_path = os.path.join(frieren_path, "cfm")
+    util_path = os.path.join(cfm_path, "util.py")
+    print(f"cfm directory exists: {os.path.exists(cfm_path)}")
+    print(f"util.py exists: {os.path.exists(util_path)}")
+    if os.path.exists(cfm_path) and not os.path.exists(os.path.join(cfm_path, "__init__.py")):
+        print("WARNING: cfm directory exists but has no __init__.py file")
+    raise
 
 
 def load_model_from_config(config, ckpt, verbose=False):
