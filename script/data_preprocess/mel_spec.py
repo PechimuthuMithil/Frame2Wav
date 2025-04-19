@@ -102,9 +102,29 @@ if __name__ == '__main__':
     num_gpus = 1
     max_duration = 10
     batch_max_length = int(max_duration * 62.5)# 62.5 is the mel length for 1 second
+    vqgan_bathch_max_length = 848 # spec_crop_len in SpecVQGAN.
+    vqgan_spec_len = 860
 
     args = {
         'audio_sample_rate': 16000,
+        'audio_num_mel_bins':80,
+        'fft_size': 1024,
+        'win_size': 1024,
+        'hop_size': 256,
+        'fmin': 0,
+        'fmax': 8000,
+        'batch_max_length': batch_max_length, 
+        'num_gpus': num_gpus,
+        'mode': 'none', # pad,none,
+        'save_resample':False,
+        'save_mel' :True,
+        'root_dir': pargs.input_dir,
+        'manifest_path': pargs.manifest_path,
+        'save_path': pargs.output_dir,
+    }
+
+    vqgan_args = {
+        'audio_sample_rate': 22050,
         'audio_num_mel_bins':80,
         'fft_size': 1024,
         'win_size': 1024,
